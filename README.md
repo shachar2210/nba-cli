@@ -27,7 +27,7 @@ A clean, modern, professional Python CLI for browsing **NBA games, teams, and pl
   Run anywhere, no Python installation required.
 
 > **Note on Time Zones:**  
-> Game times are shown in **US Eastern Time (ET)** as provided by the API.
+> All game dates and times are displayed in **UTC (Coordinated Universal Time)** as provided by the API source.
 
 ---
 
