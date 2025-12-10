@@ -39,13 +39,15 @@ Run instantly with zero setup.
 
 ### 1️⃣ Build the image
 
+You must run this command from the **project root directory** (`nba-cli/`).
+
 ```bash
 docker build -t nba-cli .
 ```
 
 ### 2️⃣ Run commands
 
-All API calls require your API key:
+All API calls require your API key. Obtain a free key from [BallDontLie.io](https://balldontlie.io).
 
 | Command | Description | Example |
 |--------|-------------|---------|
