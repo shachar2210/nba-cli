@@ -1,4 +1,5 @@
 # 🎯 NBA CLI – Command-Line NBA Browser
+[![NBA CLI CI](https://github.com/shachar2210/nba-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/shachar2210/nba-cli/actions/workflows/ci.yml)
 
 A clean, modern, professional Python CLI for browsing **NBA games, teams, and players** — powered by the BallDontLie API.
 
