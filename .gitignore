@@ -1,0 +1,20 @@
+# Python compilation
+__pycache__/
+*.pyc
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Environment variables (Secrets!)
+.env
+
+# IDE settings
+.idea/
+.vscode/
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
