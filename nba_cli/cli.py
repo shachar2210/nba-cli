@@ -60,7 +60,7 @@ def cmd_games(args: argparse.Namespace) -> None:
         msg = f"No games found for {day.isoformat()}"
         if args.team:
             msg += f" and team filter '{args.team}'"
-        console.print(f"[bold]{msg}[/bold]")
+        console.print(f"[bold yellow]{msg}[/bold yellow]")
         return
 
     table = Table(title=f"NBA games for {day.isoformat()}")
@@ -72,13 +72,24 @@ def cmd_games(args: argparse.Namespace) -> None:
 
     for g in games:
         tipoff_str = g.date.strftime("%Y-%m-%d")
+        status_raw = _format_status(g.status)
+        status_color = "white"
+        if status_raw == "Final":
+            status_color = "green"
+        elif ":" in status_raw or status_raw == "Scheduled":
+            status_color = "yellow"
+        elif status_raw in ("In Progress", "Halftime"):
+            status_color = "red bold"
 
+        status_str = f"[{status_color}]{status_raw}[/]"
         score = "-"
-        # Accessing scores should be safe now that _parse_game is complete
         home_score = g.home_team_score if g.home_team_score is not None else 0
         visitor_score = g.visitor_team_score if g.visitor_team_score is not None else 0
 
         if home_score or visitor_score:
+            score_color = "white"
+            if status_raw == "Final":
+                score_color = "red"
             score = f"{visitor_score} - {home_score}"
 
         table.add_row(
@@ -86,7 +97,7 @@ def cmd_games(args: argparse.Namespace) -> None:
             g.visitor_team.abbreviation or g.visitor_team.full_name,
             g.home_team.abbreviation or g.home_team.full_name,
             score,
-            _format_status(g.status),
+            status_str,
         )
 
     console.print(table)
@@ -98,7 +109,7 @@ def cmd_teams(args: argparse.Namespace) -> None:
 
     teams = get_teams(conference=conference, division=division)
     if not teams:
-        console.print("[bold]No teams found[/bold]")
+        console.print("[bold red]No teams found[/bold red]")
         return
 
     if not conference and not division:

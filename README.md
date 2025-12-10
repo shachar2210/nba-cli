@@ -49,15 +49,15 @@ docker build -t nba-cli .
 
 All API calls require your API key. Obtain a free key from [BallDontLie.io](https://balldontlie.io).
 
-| Command | Description | Example |
-|--------|-------------|---------|
-| Games (Today) | Show today's games | `docker run --rm -e BALLDONTLIE_API_KEY="KEY" nba-cli games` |
-| Games (Date) | Show games for a specific date | `docker run --rm -e BALLDONTLIE_API_KEY="KEY" nba-cli games 2023-12-25` |
-| Games (Team Filter) | Filter by team | `docker run --rm -e BALLDONTLIE_API_KEY="KEY" nba-cli games --team LAL` |
-| Teams | List teams | `docker run --rm -e BALLDONTLIE_API_KEY="KEY" nba-cli teams` |
-| Teams Filter | Filter by conference or division | `docker run --rm -e BALLDONTLIE_API_KEY="KEY" nba-cli teams --conference West` |
-| Players | Search players | `docker run --rm -e BALLDONTLIE_API_KEY="KEY" nba-cli players --search "LeBron"` |
-| Help | Show all commands | `docker run --rm nba-cli --help` |
+| Command | Description | Example                                                                             |
+|--------|-------------|-------------------------------------------------------------------------------------|
+| Games (Today) | Show today's games | `docker run --rm -t -e BALLDONTLIE_API_KEY="KEY" nba-cli games`                     |
+| Games (Date) | Show games for a specific date | `docker run --rm -t -e BALLDONTLIE_API_KEY="KEY" nba-cli games 2023-12-25`          |
+| Games (Team Filter) | Filter by team | `docker run --rm -t -e BALLDONTLIE_API_KEY="KEY" nba-cli games --team LAL`          |
+| Teams | List teams | `docker run --rm -t -e BALLDONTLIE_API_KEY="KEY" nba-cli teams`                     |
+| Teams Filter | Filter by conference or division | `docker run --rm -t -e BALLDONTLIE_API_KEY="KEY" nba-cli teams --conference West`   |
+| Players | Search players | `docker run --rm -t -e BALLDONTLIE_API_KEY="KEY" nba-cli players --search "LeBron"` |
+| Help | Show all commands | `docker run --rm -t nba-cli --help`                                                 |
 
 > Replace `"KEY"` with your actual API key.
 

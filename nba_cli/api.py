@@ -124,7 +124,6 @@ def get_games_for_date(day: date) -> List[Game]:
     return [_parse_game(raw) for raw in _request_paginated("/games", params)]
 
 
-# Optimization: Cache the teams result so we don't hit the API repeatedly for static data
 @lru_cache(maxsize=1)
 def get_teams(conference: str | None = None, division: str | None = None) -> List[Team]:
     params: Dict[str, Any] = {}
