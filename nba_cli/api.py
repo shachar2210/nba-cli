@@ -1,13 +1,18 @@
 from __future__ import annotations
 
+import sys
 from datetime import date, datetime
 from functools import lru_cache
 from typing import Any, Dict, Iterable, List
 
 import requests
+from rich.console import Console
 
 from .config import API_BASE_URL_V1, get_api_key
 from .models import Game, Team, Player
+
+# Initialize rich console for error logging (prints to stderr)
+console = Console(stderr=True)
 
 
 def _get_headers() -> Dict[str, str]:
@@ -18,6 +23,10 @@ def _get_headers() -> Dict[str, str]:
 
 
 def _request_paginated(path: str, params: Dict[str, Any]) -> Iterable[Dict[str, Any]]:
+    """
+    Handles API requests with pagination and robust error handling.
+    Exits the program cleanly if a network or API error occurs.
+    """
     cursor = None
 
     while True:
@@ -26,14 +35,43 @@ def _request_paginated(path: str, params: Dict[str, Any]) -> Iterable[Dict[str, 
             request_params["cursor"] = cursor
 
         url = f"{API_BASE_URL_V1}{path}"
-        resp = requests.get(url, headers=_get_headers(), params=request_params, timeout=10)
-        resp.raise_for_status()
-        payload = resp.json()
 
+        try:
+            # Added timeout to prevent hanging
+            resp = requests.get(url, headers=_get_headers(), params=request_params, timeout=10)
+            resp.raise_for_status()
+            payload = resp.json()
+
+        except requests.exceptions.HTTPError as err:
+            status = resp.status_code
+            if status == 401:
+                console.print("[bold red]Error: Unauthorized.[/] Please check your API Key.")
+            elif status == 429:
+                console.print("[bold red]Error: Rate Limit Exceeded.[/] You are making too many requests. Please wait a moment.")
+            elif status >= 500:
+                console.print("[bold red]Error: NBA API Server Error.[/] The service is currently down. Try again later.")
+            else:
+                console.print(f"[bold red]HTTP Error {status}:[/] {err}")
+            sys.exit(1)
+
+        except requests.exceptions.ConnectionError:
+            console.print("[bold red]Error: Connection Failed.[/] Please check your internet connection.")
+            sys.exit(1)
+
+        except requests.exceptions.Timeout:
+            console.print("[bold red]Error: Request Timed Out.[/] The API took too long to respond.")
+            sys.exit(1)
+
+        except Exception as e:
+            console.print(f"[bold red]Unexpected Error:[/] {e}")
+            sys.exit(1)
+
+        # Process data
         data = payload.get("data") or []
         for item in data:
             yield item
 
+        # Handle pagination cursor
         meta = payload.get("meta") or {}
         cursor = meta.get("next_cursor")
         if not cursor:
@@ -63,6 +101,7 @@ def _parse_game(raw: Dict[str, Any]) -> Game:
     game_dt: datetime | None = None
     if isinstance(dt_str, str):
         try:
+            # Keeps UTC logic as decided
             game_dt = datetime.fromisoformat(dt_str.replace("Z", "+00:00"))
         except ValueError:
             game_dt = None
